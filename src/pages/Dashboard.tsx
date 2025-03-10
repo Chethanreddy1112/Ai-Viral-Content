@@ -64,7 +64,7 @@ const Dashboard = () => {
         {
           id: '2',
           requestId: 'req2',
-          content: 'The future of blockchain technology isn't just about cryptocurrencies - it's about transforming how we think about digital ownership and value exchange. Excited to see where this goes in the next few years!',
+          content: "The future of blockchain technology isn't just about cryptocurrencies - it's about transforming how we think about digital ownership and value exchange. Excited to see where this goes in the next few years!",
           status: 'approved',
           createdAt: new Date(Date.now() - 86400000), // 1 day ago
           updatedAt: new Date(Date.now() - 86400000),
