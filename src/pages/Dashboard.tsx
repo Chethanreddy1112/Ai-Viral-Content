@@ -130,10 +130,12 @@ const Dashboard = () => {
                 Refresh
               </Button>
               
-              <Button as={Link} to="/create">
-                <PlusIcon className="h-4 w-4 mr-2" />
-                Create Content
-              </Button>
+              <Link to="/create">
+                <Button>
+                  <PlusIcon className="h-4 w-4 mr-2" />
+                  Create Content
+                </Button>
+              </Link>
             </div>
           </div>
           
@@ -273,9 +275,11 @@ const Dashboard = () => {
                           </p>
                         </CardContent>
                         <CardFooter className="flex justify-between">
-                          <Button variant="outline" size="sm" as={Link} to={`/content/${content.id}`}>
-                            View Details
-                          </Button>
+                          <Link to={`/content/${content.id}`}>
+                            <Button variant="outline" size="sm">
+                              View Details
+                            </Button>
+                          </Link>
                           
                           {content.engagement && (
                             <div className="flex items-center gap-3">
@@ -309,23 +313,25 @@ const Dashboard = () => {
                       <p className="text-muted-foreground mb-4">
                         You haven't created any content yet.
                       </p>
-                      <Button as={Link} to="/create" variant="outline" size="sm">
-                        Create Your First Content
-                      </Button>
+                      <Link to="/create">
+                        <Button variant="outline" size="sm">
+                          Create Your First Content
+                        </Button>
+                      </Link>
                     </CardContent>
                   </Card>
                 )
               )}
               
               {!isLoading && recentContent.length > 0 && (
-                <Button 
-                  variant="ghost" 
-                  className="w-full text-muted-foreground hover:text-foreground"
-                  as={Link}
-                  to="/analytics"
-                >
-                  View All Content
-                </Button>
+                <Link to="/analytics">
+                  <Button 
+                    variant="ghost" 
+                    className="w-full text-muted-foreground hover:text-foreground"
+                  >
+                    View All Content
+                  </Button>
+                </Link>
               )}
             </div>
             
@@ -378,24 +384,24 @@ const Dashboard = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-2">
-                  <Button 
-                    variant="outline" 
-                    className="w-full justify-start"
-                    as={Link}
-                    to="/create"
-                  >
-                    <PlusIcon className="h-4 w-4 mr-2" />
-                    Create New Content
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    className="w-full justify-start"
-                    as={Link}
-                    to="/analytics"
-                  >
-                    <BarChart2Icon className="h-4 w-4 mr-2" />
-                    View Analytics
-                  </Button>
+                  <Link to="/create">
+                    <Button 
+                      variant="outline" 
+                      className="w-full justify-start"
+                    >
+                      <PlusIcon className="h-4 w-4 mr-2" />
+                      Create New Content
+                    </Button>
+                  </Link>
+                  <Link to="/analytics">
+                    <Button 
+                      variant="outline" 
+                      className="w-full justify-start"
+                    >
+                      <BarChart2Icon className="h-4 w-4 mr-2" />
+                      View Analytics
+                    </Button>
+                  </Link>
                 </CardContent>
               </Card>
             </div>
