@@ -7,7 +7,28 @@ import GlassMorphism from '@/components/ui-custom/GlassMorphism';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import { BarChart2Icon, Edit3Icon, PlusIcon, RefreshCwIcon, TrendingUpIcon } from 'lucide-react';
-import { GeneratedContent } from '@/types';
+
+interface Engagement {
+  id: string;
+  contentId: string;
+  views: number;
+  likes: number;
+  shares: number;
+  comments: number;
+  totalEngagement: number;
+  platform: string;
+  lastUpdated: Date;
+}
+
+interface GeneratedContent {
+  id: string;
+  requestId: string;
+  content: string;
+  status: 'posted' | 'approved' | 'generated';
+  createdAt: Date;
+  updatedAt: Date;
+  engagement?: Engagement;
+}
 
 const Dashboard = () => {
   const [recentContent, setRecentContent] = useState<GeneratedContent[]>([]);
