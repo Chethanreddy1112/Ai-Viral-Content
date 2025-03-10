@@ -6,9 +6,28 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import { Check, ChevronDown, Clock, Edit3Icon, Sparkles } from 'lucide-react';
-import { ContentRequest, ContentTone, ContentType, GeneratedContent } from '@/types';
-import { openaiService } from '@/services/openai';
-import { useToast } from '@/components/ui/use-toast';
+import { useToast } from '@/hooks/use-toast';
+import { Link } from 'react-router-dom';
+
+// Define types
+interface ContentRequest {
+  title: string;
+  type: ContentType;
+  tone: ContentTone;
+  keywords: string[];
+  targetAudience?: string;
+  additionalInfo?: string;
+}
+
+type ContentType = 'tweet' | 'meme' | 'blog' | 'article';
+type ContentTone = 'professional' | 'casual' | 'humorous' | 'inspirational' | 'controversial' | 'educational';
+
+interface GeneratedContent {
+  id: string;
+  content: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
 
 const CreateContent = () => {
   const navigate = useNavigate();
@@ -50,9 +69,24 @@ const CreateContent = () => {
         additionalInfo,
       };
       
-      const content = await openaiService.generateContent(request);
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      // Mock response
+      const content: GeneratedContent = {
+        id: Math.random().toString(36).substring(2, 9),
+        content: `Generated ${contentType} about "${title}" with a ${contentTone} tone. Keywords: ${request.keywords.join(', ')}. This is a placeholder for AI-generated content that would normally come from an API like OpenAI.`,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      };
+      
       setGeneratedContent(content);
       setEditedContent(content.content);
+      
+      toast({
+        title: "Content generated",
+        description: "Your content has been successfully created!",
+      });
     } catch (error) {
       console.error('Error generating content:', error);
       toast({
@@ -80,7 +114,7 @@ const CreateContent = () => {
     setIsGenerating(true);
     
     try {
-      // In a real app, this would call the API with the same request parameters
+      // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1500));
       
       // Mock a slightly different content
@@ -91,6 +125,11 @@ const CreateContent = () => {
         
         setGeneratedContent(newContent);
         setEditedContent(newContent.content);
+        
+        toast({
+          title: "Content regenerated",
+          description: "Your content has been regenerated with new variations.",
+        });
       }
     } catch (error) {
       toast({
@@ -273,13 +312,14 @@ const CreateContent = () => {
                 </CardContent>
                 
                 <CardFooter className="justify-between">
-                  <Button
-                    variant="outline"
-                    onClick={() => navigate('/dashboard')}
-                    disabled={isGenerating}
-                  >
-                    Cancel
-                  </Button>
+                  <Link to="/dashboard">
+                    <Button
+                      variant="outline"
+                      disabled={isGenerating}
+                    >
+                      Cancel
+                    </Button>
+                  </Link>
                   
                   <Button
                     onClick={handleGenerate}
