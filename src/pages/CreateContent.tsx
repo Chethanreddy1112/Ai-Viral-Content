@@ -5,9 +5,10 @@ import { Button } from '@/components/ui-custom/Button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui-custom/Card';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
-import { Check, ChevronDown, Clock, Edit3Icon, Sparkles } from 'lucide-react';
+import { Check, ChevronDown, Clock, Edit3Icon, ImageIcon, Sparkles } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Link } from 'react-router-dom';
+import { openai } from '@/services/openai';
 
 // Define types
 interface ContentRequest {
@@ -25,6 +26,7 @@ type ContentTone = 'professional' | 'casual' | 'humorous' | 'inspirational' | 'c
 interface GeneratedContent {
   id: string;
   content: string;
+  imageUrl?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -43,6 +45,7 @@ const CreateContent = () => {
   
   // Process state
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isGeneratingImage, setIsGeneratingImage] = useState(false);
   const [generatedContent, setGeneratedContent] = useState<GeneratedContent | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [editedContent, setEditedContent] = useState('');
@@ -60,22 +63,19 @@ const CreateContent = () => {
     setIsGenerating(true);
     
     try {
-      const request: ContentRequest = {
-        title,
-        type: contentType,
-        tone: contentTone,
-        keywords: keywords.split(',').map(k => k.trim()),
-        targetAudience: audience,
-        additionalInfo,
-      };
+      const keywordsList = keywords.split(',').map(k => k.trim());
       
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      const prompt = `Create a ${contentTone} ${contentType} about "${title}". 
+        Keywords: ${keywordsList.join(', ')}. 
+        ${audience ? `Target audience: ${audience}.` : ''}
+        ${additionalInfo ? `Additional information: ${additionalInfo}` : ''}
+        Keep it concise and engaging.`;
+
+      const response = await openai.generateText(prompt);
       
-      // Mock response
       const content: GeneratedContent = {
         id: Math.random().toString(36).substring(2, 9),
-        content: `Generated ${contentType} about "${title}" with a ${contentTone} tone. Keywords: ${request.keywords.join(', ')}. This is a placeholder for AI-generated content that would normally come from an API like OpenAI.`,
+        content: response,
         createdAt: new Date(),
         updatedAt: new Date()
       };
@@ -98,6 +98,37 @@ const CreateContent = () => {
       setIsGenerating(false);
     }
   };
+
+  const handleGenerateImage = async () => {
+    if (!generatedContent) return;
+    
+    setIsGeneratingImage(true);
+    
+    try {
+      const prompt = `Create an image related to: ${title}. Keywords: ${keywords}`;
+      const imageUrl = await openai.generateImage(prompt);
+      
+      setGeneratedContent({
+        ...generatedContent,
+        imageUrl,
+        updatedAt: new Date()
+      });
+      
+      toast({
+        title: "Image generated",
+        description: "Your image has been successfully created!",
+      });
+    } catch (error) {
+      console.error('Error generating image:', error);
+      toast({
+        title: "Image generation failed",
+        description: "There was an error generating your image. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsGeneratingImage(false);
+    }
+  };
   
   const handleApprove = () => {
     // In a real app, this would call an API to approve the content
@@ -114,14 +145,22 @@ const CreateContent = () => {
     setIsGenerating(true);
     
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      const keywordsList = keywords.split(',').map(k => k.trim());
       
-      // Mock a slightly different content
+      const prompt = `Create a ${contentTone} ${contentType} about "${title}". 
+        Keywords: ${keywordsList.join(', ')}. 
+        ${audience ? `Target audience: ${audience}.` : ''}
+        ${additionalInfo ? `Additional information: ${additionalInfo}` : ''}
+        Keep it concise and engaging. Make this version different from previous attempts.`;
+
+      const response = await openai.generateText(prompt);
+      
       if (generatedContent) {
-        const newContent = {...generatedContent};
-        newContent.content = `${generatedContent.content} (Regenerated version)`;
-        newContent.updatedAt = new Date();
+        const newContent = {
+          ...generatedContent,
+          content: response,
+          updatedAt: new Date()
+        };
         
         setGeneratedContent(newContent);
         setEditedContent(newContent.content);
@@ -369,6 +408,38 @@ const CreateContent = () => {
                     ) : (
                       <div className="bg-muted/30 rounded-md p-4">
                         <p className="whitespace-pre-wrap">{generatedContent.content}</p>
+                        
+                        {generatedContent.imageUrl && (
+                          <div className="mt-4">
+                            <img 
+                              src={generatedContent.imageUrl} 
+                              alt={title}
+                              className="rounded-md w-full object-cover max-h-[300px]"
+                            />
+                          </div>
+                        )}
+                        
+                        {!generatedContent.imageUrl && !isGeneratingImage && (
+                          <div className="mt-4">
+                            <Button
+                              variant="outline"
+                              onClick={handleGenerateImage}
+                              className="w-full"
+                            >
+                              <ImageIcon className="h-4 w-4 mr-2" />
+                              Generate Image
+                            </Button>
+                          </div>
+                        )}
+                        
+                        {isGeneratingImage && (
+                          <div className="mt-4 p-4 border border-dashed rounded-md flex items-center justify-center">
+                            <div className="text-center">
+                              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-2"></div>
+                              <p className="text-sm text-muted-foreground">Generating image...</p>
+                            </div>
+                          </div>
+                        )}
                       </div>
                     )}
                     
