@@ -1,16 +1,18 @@
-
 import { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui-custom/Button';
 import { Card } from '@/components/ui-custom/Card';
 import GlassMorphism from '@/components/ui-custom/GlassMorphism';
 import Footer from '@/components/layout/Footer';
-import { ArrowRightIcon, BrainIcon, TrendingUpIcon, ZapIcon } from 'lucide-react';
+import { ArrowRightIcon, BrainIcon, LogInIcon, TrendingUpIcon, UserPlusIcon, ZapIcon } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
+import Header from '@/components/layout/Header';
 
 const Index = () => {
   const navigate = useNavigate();
   const heroRef = useRef<HTMLDivElement>(null);
   const featuresRef = useRef<HTMLDivElement>(null);
+  const { isAuthenticated } = useAuth();
   
   // Animation on scroll effect
   useEffect(() => {
@@ -35,6 +37,8 @@ const Index = () => {
 
   return (
     <div className="flex flex-col min-h-screen">
+      <Header />
+      
       {/* Hero Section */}
       <section 
         ref={heroRef}
@@ -56,21 +60,38 @@ const Index = () => {
               </div>
               
               <div className="flex flex-wrap gap-4 justify-center lg:justify-start mt-8 animate-on-scroll">
-                <Button 
-                  size="lg"
-                  onClick={() => navigate('/dashboard')}
-                  className="group"
-                >
-                  Get Started
-                  <ArrowRightIcon className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                </Button>
-                <Button 
-                  variant="glass"
-                  size="lg"
-                  onClick={() => navigate('/about')}
-                >
-                  Learn More
-                </Button>
+                {isAuthenticated ? (
+                  <Button 
+                    size="lg"
+                    onClick={() => navigate('/dashboard')}
+                    className="group"
+                  >
+                    Go to Dashboard
+                    <ArrowRightIcon className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                  </Button>
+                ) : (
+                  <>
+                    <Button 
+                      size="lg"
+                      onClick={() => navigate('/login')}
+                      className="group"
+                    >
+                      <LogInIcon size={18} className="mr-2" />
+                      Sign In
+                    </Button>
+                    <Button 
+                      variant="glass"
+                      size="lg"
+                      onClick={() => {
+                        navigate('/login');
+                        localStorage.setItem('authMode', 'signup');
+                      }}
+                    >
+                      <UserPlusIcon size={18} className="mr-2" />
+                      Sign Up
+                    </Button>
+                  </>
+                )}
               </div>
               
               <div className="pt-8 grid grid-cols-2 sm:grid-cols-3 gap-4 animate-on-scroll">
@@ -131,7 +152,6 @@ const Index = () => {
                 </div>
               </GlassMorphism>
               
-              {/* Decorative elements */}
               <div className="absolute top-1/4 -left-8 -z-10 w-24 h-24 bg-primary/20 rounded-full blur-3xl" />
               <div className="absolute bottom-1/4 -right-8 -z-10 w-32 h-32 bg-blue-500/20 rounded-full blur-3xl" />
             </div>
@@ -229,12 +249,21 @@ const Index = () => {
                 </p>
               </div>
               <div className="flex justify-center md:justify-end">
-                <Button 
-                  size="lg"
-                  onClick={() => navigate('/dashboard')}
-                >
-                  Get Started For Free
-                </Button>
+                {isAuthenticated ? (
+                  <Button 
+                    size="lg"
+                    onClick={() => navigate('/dashboard')}
+                  >
+                    Go to Dashboard
+                  </Button>
+                ) : (
+                  <Button 
+                    size="lg"
+                    onClick={() => navigate('/login')}
+                  >
+                    Get Started For Free
+                  </Button>
+                )}
               </div>
             </div>
           </GlassMorphism>
