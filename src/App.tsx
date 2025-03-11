@@ -12,6 +12,7 @@ import Dashboard from "./pages/Dashboard";
 import CreateContent from "./pages/CreateContent";
 import Analytics from "./pages/Analytics";
 import Settings from "./pages/Settings";
+import ApiSettings from "./pages/ApiSettings";
 
 const queryClient = new QueryClient();
 
@@ -64,6 +65,14 @@ const App = () => {
                 element={
                   <ProtectedRoute>
                     <Settings />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/api-settings" 
+                element={
+                  <ProtectedRoute>
+                    <ApiSettings />
                   </ProtectedRoute>
                 } 
               />

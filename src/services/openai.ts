@@ -15,11 +15,14 @@ const getApiKey = () => {
 
 // Function to set the API key in storage
 export const setApiKey = (key: string) => {
-  localStorage.setItem(STORAGE_KEY, key);
+  // Remove 'sk-proj-' prefix if it exists
+  const cleanedKey = key.startsWith('sk-proj-') ? key.replace('sk-proj-', '') : key;
+  localStorage.setItem(STORAGE_KEY, cleanedKey);
 };
 
 // Initialize with the provided API key
-setApiKey("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");
+const apiKey = "P4S3PBDgEBX799_SBdmVb-dZWl0-eDlcA1gBnw0b_aWZ1sk7HKwuP8uCK2HOYw6FIaZT2fvoVFT3BlbkFJgFiFOn_msCy3OCmlg7beJt_oWCTCKAtYupryipKJxm-5XDPQhFib7lGqFDRR0uAngp57GyNmIA";
+setApiKey(apiKey);
 
 // Check if we have an API key
 const hasApiKey = () => {
