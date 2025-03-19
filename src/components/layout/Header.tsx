@@ -85,7 +85,7 @@ const Header = () => {
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2">
           <div className="relative w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-primary-foreground font-bold">
-            <span className="animate-pulse-soft">A</span>
+            <span className="animate-pulse-soft">V</span>
           </div>
           <span className="font-medium text-lg hidden sm:block">ViralAI</span>
         </Link>
