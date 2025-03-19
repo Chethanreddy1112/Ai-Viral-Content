@@ -87,7 +87,7 @@ const Header = () => {
           <div className="relative w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-primary-foreground font-bold">
             <span className="animate-pulse-soft">A</span>
           </div>
-          <span className="font-medium text-lg hidden sm:block">ArtificialContent</span>
+          <span className="font-medium text-lg hidden sm:block">ViralAI</span>
         </Link>
 
         {/* Desktop Navigation */}
